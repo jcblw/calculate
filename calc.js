@@ -245,11 +245,13 @@ calc.prototype.build = function(){
 
 		window.onload = function(){
 
-			html.style.height = window.innerHeight + 'px';
-			html.style.overflow = 'hidden';
-			body.style.height = window.innerHeight + 'px';
-			body.style.overflow = 'hidden';
-			bottom.className = bottom.className + ' panel';
+			if(window.innerHeight > 0){ 
+				html.style.height = window.innerHeight + 'px';
+				html.style.overflow = 'hidden';
+				body.style.height = window.innerHeight + 'px';
+				body.style.overflow = 'hidden';
+				bottom.className = bottom.className + ' panel';
+			}
 			
 
 		}
