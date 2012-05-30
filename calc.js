@@ -3,14 +3,30 @@ var utils = {
 	inArray : function (arr, val) {
 		return (arr.indexOf(val) != -1);
 	}
-},
-validChar = function(e){
+};
+
+var calc = function(){
+	this.state = 0;
+	this.equal = null;
+	this.number = null;
+	this.method = '+';
+	this.display = document.querySelectorAll('.display')[0];
+	this.mock = document.querySelectorAll('.mock-display')[0];
+	this.displaywrp = document.querySelectorAll('.display-wrp')[0];
+	this.btns = document.querySelectorAll('.btn');
+};
+
+calc.prototype.charset = function(e){
+
+
+
 	//library of codes
-	var valid = [8,13,35,36,37,39,42,43,45,46,47,48,49,50,51,52,53,54,55,56,57],
+	var _this = (typeof this.display === 'undefined') ? cal : this;
+		valid = [8,13,35,36,37,39,42,43,45,46,47,48,49,50,51,52,53,54,55,56,57],
 		method = [42,43,45,47],
 		equal = [13],
 		code = e.keyCode,
-		value = cal.display.innerText.replace(/^[0]+/g, '');
+		value = _this.display.innerText.replace(/^[0]+/g, '');
 	//check for a valid key code
 	if(utils.inArray(valid, code)){
 
@@ -23,23 +39,28 @@ validChar = function(e){
 			// if its a method update the method
 			if(utils.inArray(method, code)){
 
-
-
 				var legend = {
 					47 : '/',
 					45 : '-',
 					43 : '+',
 					42 : '*'
 				};
-				cal.changeMethod(legend[code]);
+
+				_this.changeMethod(legend[code]);
 			// if its enter	
 			}else if(utils.inArray(equal, code)){
 				//get total
-				cal.equals(parseFloat(value));
+				_this.equals(parseFloat(value));
 			}
 			e.preventDefault();
 		}else{
-			cal.display.innerText = value;
+			if(_this.state === 1){
+				_this.show(String.fromCharCode(code));
+				_this.state = 0;
+				e.preventDefault();
+			}else{
+				_this.display.innerText = value;
+			}
 		}
 
 	}else{
@@ -48,36 +69,61 @@ validChar = function(e){
 
 };
 
-var calc = function(){
-	this.number = null;
-	this.method = '+';
-	this.display = document.querySelectorAll('.display')[0];
-	this.mock = document.querySelectorAll('.mock-display')[0];
-	this.btns = document.querySelectorAll('.btn');
-};
-
 calc.prototype.changeMethod = function(method){
-	this.method = method;
 
+	if(this.state === 2){
+
+		var value = this.display.innerText.replace(/^[0]+/g, '');
+		this.equal = this.equals(parseFloat(value), 'soft');
+
+		console.log(this.equal);
+
+	}else{
 	// when a modifier is hit remove text in display and set number in display to number
 	this.number = parseFloat(this.display.innerText);
+
+	}
+
+	this.method = method;
+	this.methodDisplay(this.method);
+
 	this.show('0');
+	this.state = 2;
 };
+
+calc.prototype.methodDisplay = function(method){
+
+	var i = 0;
+	while(i <this.btns.length){
+		if(this.btns[i].dataset['char'] === method){
+			// remove before adding to avoid multiple classes on same button
+			this.btns[i].className = this.btns[i].className.replace(' current', '') + ' current';
+		}else{
+			this.btns[i].className = this.btns[i].className.replace(' current', ''); 			
+		}
+		i += 1;
+	}
+}
 
 calc.prototype.show = function(number){
 
-	this.mock.innerText = (isNaN(number)) ? 'oh' : number;
-	this.mock.className = this.mock.className + ' show'; 
+	var _this = this;
+
+	this.mock.innerText = (isNaN(number)) ? 'Reset Me Please' : number;
+	this.displaywrp.className = this.displaywrp.className + ' show'; 
 
 	setTimeout(function(){
-		cal.mock.className = cal.mock.className.replace(' show', ''); 
-		cal.display.innerText = (isNaN(number)) ? 'no!' : number;
-		cal.setCursor();
-	},200);
+		_this.displaywrp.className = _this.displaywrp.className.replace(' show', ''); 
+		_this.display.innerText = (isNaN(number)) ? 'Reset Me' : number;
+		_this.setCursor();
+	},100);
 
 };
 
-calc.prototype.equals = function(number){
+calc.prototype.equals = function(number, method){
+
+	this.state = 1;
+	this.methodDisplay(null);
 
 	number = (isNaN(number)) ? 0 : number;
 
@@ -96,20 +142,33 @@ calc.prototype.equals = function(number){
 			break;
 	}
 
-	this.show(this.number);
+	if(method !== 'soft'){
+		this.show(this.number);
+	}
+
+	return this.number;
 
 };
 
 calc.prototype.clear = function(){
-	cal.number = 0;
-	cal.show('0');
+
+	var _this = cal;
+
+	_this.number = 0;
+	_this.show('0');
 };
 
 calc.prototype.backspace = function(){
-	cal.display.innerText = cal.display.innerText.substring(0, cal.display.innerText.length - 1); 
+
+	var _this = cal;
+
+	_this.display.innerText = _this.display.innerText.substring(0, _this.display.innerText.length - 1); 
+
 };
 
 calc.prototype.events = function(){
+
+	var _this = this
 
 	var btn = {
 
@@ -122,11 +181,11 @@ calc.prototype.events = function(){
 			};
 
 			
-			validChar(e);
+			_this.charset(e);
 			//check if valid mock prevent default will stop this
 			if(valid){
-				cal.display.innerText = cal.display.innerText.replace(/^[0]+/g, '') + e.char;
-				cal.display.scrollLeft = cal.display.scrollLeft + 50;
+				_this.display.innerText = _this.display.innerText.replace(/^[0]+/g, '') + e.char;
+				_this.display.scrollLeft = _this.display.scrollLeft + 50;
 
 			}
 
@@ -142,7 +201,7 @@ calc.prototype.events = function(){
 
 	this.setCursor();
 
-	this.display.addEventListener('keypress', validChar, false);
+	this.display.addEventListener('keypress', this.charset, false);
 	document.querySelector('.clear').addEventListener('click', this.clear, false);
 	document.querySelector('.backspace').addEventListener('click', this.backspace, false);
 	var i = 0;
@@ -177,6 +236,8 @@ calc.prototype.setCursor = function() {
 
 calc.prototype.build = function(){
 
+	var _this = this;
+
 	if(window.innerHeight < 360){
 		var bottom = document.querySelectorAll('.bottom-tab')[0],
 			html = document.getElementsByTagName('html')[0],
@@ -189,11 +250,13 @@ calc.prototype.build = function(){
 			body.style.height = window.innerHeight + 'px';
 			body.style.overflow = 'hidden';
 			bottom.className = bottom.className + ' panel';
-			cal.mock.style.width = (window.innerWidth - 40) + 'px';
+			
 
 		}
 
 	};
+
+	_this.mock.style.width = (window.innerWidth - 40) + 'px';
 
 	this.events();
 
