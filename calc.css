@@ -2,6 +2,8 @@ body{
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	background-color: #ccc;
+	font-family: monospace;
 }
 
 ::selection {
@@ -11,9 +13,7 @@ background: rgba(0,0,0,0);
 .calculator-wrp{
 	min-width: 280px;
 	height: 360px;
-	background: #e7e7e7;
-	font-family: monospace;
-	background: -webkit-linear-gradient(top, rgba(196,196,196,1) 0%,rgba(160,160,160,1) 100%);
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 1%,rgba(0,0,0,0.15) 100%);
 	overflow: hidden;
 	margin: 0 auto;
 }
@@ -45,7 +45,7 @@ background: rgba(0,0,0,0);
 	position: absolute;
 	top: 50px;
 	box-shadow: 0px -3px 30px rgba(0,0,0,0);
-	left: 0;
+	right: 0;
 }
 
 .show .display{
@@ -73,7 +73,7 @@ background: rgba(0,0,0,0);
 	height: 28px;
 	border-right: 1px solid rgba(255,255,255,.3);
 	cursor: pointer;
-	background: rgba(192,192,192,1) ;
+	background: rgb(192,192,192) ;
 }
 
 .display-wrp .quick-btn i{
@@ -156,13 +156,18 @@ background: rgba(0,0,0,0);
 	text-align: center;
 	line-height: 55px;
 	display: block;
-	background: -webkit-radial-gradient(center, ellipse cover, rgba(242,86,0,0) 0%,rgba(242,86,0,0) 100%); /* Chrome10+,Safari5.1+ */
+	border-radius: 10px;
 	-webkit-transition: all 1s;
 	z-index: 0;
 	text-decoration: none;
 }
+
+.btn.current{
+	background: #FF4E00;
+}
+
 .btn.current span{
-	background: -webkit-radial-gradient(center, ellipse cover, rgba(255,150,0,1) 0%,rgba(255,150,0,0) 100%); /* Chrome10+,Safari5.1+ */
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,.15) 100%); 
 }
 
 .btn-wrp > .btn:hover{

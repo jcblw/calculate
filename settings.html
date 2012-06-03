@@ -13,14 +13,102 @@ body{
 	margin: 20px auto;
 	padding: 20px;
 }
-</style>
+ul{
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+li span{
+	display: inline-block;
+	padding: 5px;
+	width: 100px;
 
+}
+
+.colorpicker{
+	width: 20px;
+	height: 20px;
+	border: 5px solid #fff;
+	box-shadow: 0px 1px 1px rgba(0,0,0,.4);
+	display: inline-block;
+	vertical-align: middle;
+	margin: 5px;
+	border-radius: 100%;
+}
+
+.colormodule{
+	position: absolute;
+	display: none;
+	width: 230px;
+	height: 200px;
+	border: 5px solid #ddd;
+	background-color: rgb(255,255,255);
+	box-shadow: 0px 1px rgba(0,0,0,.3);
+}
+
+.pointer{
+	float: left;
+	width: 0;
+	height: 0;
+	border-width: 10px;
+	border-color: transparent #ddd transparent transparent;
+	border-style: solid;
+	margin-left: -25px;
+}
+
+#picker-wrapper {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  float: left;
+  overflow: hidden;
+}
+#slide-wrapper {
+  width: 30px;
+  height: 200px;
+  position: relative;
+  float: left;
+  overflow: hidden;
+}
+#picker-indicator {
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  border: 1px solid white;
+  border-radius: 100%;
+  box-shadow: 0px 1px rgba(0,0,0,.3);
+}
+#slide-indicator {
+  width: 100%;
+  height: 0px;
+  position: absolute;
+  border: 2px solid rgba(255,255,255,.7);
+  box-shadow: 0px 1px 1px rgba(0,0,0,.3);
+}
+.clear{
+	clear: both;
+}
+</style>
+<script src="colorpicker/colorpicker.min.js"></script>
 <div class="content">
 <h2>Settings</h2>
 
-<p>Here is where some setting will go. I have just started this app and it is still in dev. Please let me know any feed back that you have in the forum for this app on the Google Chrome App Store.</p>
-
-<p>I am soon going to be implementing a small amount of customization which will be modifying the background gradient and maybe choosing another font.</p>
+<ul>
+	<li><div class="colorpicker" id="background"></div><span>Background</span>
+	<li><div class="colorpicker" id="highlight"></div><span>Highlight</span>
+</ul>
+<div class="colormodule">
+	<div class="pointer"></div>
+	<div id="picker-wrapper">
+	    <div id="picker"></div>
+	    <div id="picker-indicator"></div>
+	</div>
+	<div id="slide-wrapper">
+	    <div id="slide"></div>
+	    <div id="slide-indicator"></div>
+	</div>
+	<div class="clear"></div>
+</div>
 
 
 
@@ -35,3 +123,61 @@ body{
 </form>
 
 </div>
+<script>
+var ele,
+	prop,
+	colorp = document.querySelectorAll('.colormodule')[0],
+	bg = document.getElementById('background'),
+	hl = document.getElementById('highlight'),
+	html = document.getElementsByTagName('html')[0],
+	c = ColorPicker(
+		document.getElementById('slide'), 
+		document.getElementById('picker'), 
+	    function(hex, hsv, rgb, mousePicker, mouseSlide) {
+
+	        ColorPicker.positionIndicators(
+	            document.getElementById('slide-indicator'),
+	            document.getElementById('picker-indicator'),
+	            mouseSlide, mousePicker
+	        );
+	        if(ele !== null){
+	        	ele.style.background = hex;
+	        	localStorage[prop] = hex;
+	    	}
+	}),
+	cHandle = function(){
+		var offclick = function(){
+			colorp.style.display = 'none';
+			html.removeEventListener('click', offclick)
+		},
+		stopit = function(e){
+			e.stopPropagation();
+		};
+		ele = this;
+		prop = ele.id;
+		colorp.style.top = ele.offsetTop + 'px';
+		colorp.style.left = (ele.offsetLeft + 35) + 'px';
+		colorp.style.display = 'block';
+		c.setHex(localStorage[prop]);
+		setTimeout(function(){
+			colorp.addEventListener('click', stopit);
+			bg.addEventListener('click', stopit);
+			hl.addEventListener('click', stopit);
+			html.addEventListener('click', offclick);
+		},100)
+	};
+
+bg.addEventListener('click', cHandle);
+hl.addEventListener('click', cHandle);
+
+if(localStorage.background){
+	ele = bg;
+	bg.style.background = localStorage.background;
+	c.setHex(localStorage.background);
+}
+if(localStorage.highlight){
+	ele = hl;
+	hl.style.background = localStorage.highlight;
+	c.setHex(localStorage.highlight);
+}
+</script>

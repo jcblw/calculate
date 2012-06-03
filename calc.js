@@ -3,9 +3,9 @@ var utils = {
 	inArray : function (arr, val) {
 		return (arr.indexOf(val) != -1);
 	}
-};
+},
 
-var calc = function(){
+calc = function(){
 	this.state = 0;
 	this.equal = null;
 	this.number = null;
@@ -14,6 +14,46 @@ var calc = function(){
 	this.mock = document.querySelectorAll('.mock-display')[0];
 	this.displaywrp = document.querySelectorAll('.display-wrp')[0];
 	this.btns = document.querySelectorAll('.btn');
+},
+
+customizr = function(){
+	var bodycss = [],
+		quickcss = [],
+		syntax;
+	if(typeof localStorage.background === 'string'){
+		syntax = 'background : ' + localStorage.background + '; ';
+		bodycss.push(syntax);
+		quickcss.push(syntax);
+	}else{
+		localStorage.background = '#CCCCCC';
+	}
+	if(typeof localStorage.font === 'string'){
+		syntax = 'font-family : ' + localStorage.font + '; ';
+		bodycss.push(syntax);
+	}else{
+		localStorage.font = 'monospace';
+	}
+	if(typeof localStorage.highlight === 'string'){
+		var style = document.getElementById('cust');
+			styles = document.createTextNode('.btn.current{background:'+localStorage.highlight+'!important;}');
+			style.appendChild(styles);
+	}else{
+		localStorage.highlight = '#FF4E00';
+	}
+
+	if(bodycss.length > 0){
+		var bod = document.getElementsByTagName('body')[0],
+			qbtn = document.querySelectorAll('.quick-btn'), i;
+
+		bod.setAttribute('style', bodycss.join(''));
+
+		i = 0;
+		while(i < qbtn.length){
+			qbtn[i].setAttribute('style', quickcss.join(''));
+			i += 1;
+		}
+
+	}
 };
 
 calc.prototype.charset = function(e){
@@ -244,7 +284,6 @@ calc.prototype.build = function(){
 			body = document.getElementsByTagName('body')[0];
 
 		window.onload = function(){
-
 			if(window.innerHeight > 0){ 
 				html.style.height = window.innerHeight + 'px';
 				html.style.overflow = 'hidden';
@@ -252,8 +291,6 @@ calc.prototype.build = function(){
 				body.style.overflow = 'hidden';
 				bottom.className = bottom.className + ' panel';
 			}
-			
-
 		}
 
 	};
@@ -268,3 +305,9 @@ calc.prototype.build = function(){
 
 var cal = new calc();
 cal.build();
+customizr();
+
+
+
+
+
