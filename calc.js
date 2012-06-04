@@ -18,12 +18,10 @@ calc = function(){
 
 customizr = function(){
 	var bodycss = [],
-		quickcss = [],
 		syntax;
 	if(typeof localStorage.background === 'string'){
 		syntax = 'background : ' + localStorage.background + '; ';
 		bodycss.push(syntax);
-		quickcss.push(syntax);
 	}else{
 		localStorage.background = '#CCCCCC';
 	}
@@ -42,17 +40,9 @@ customizr = function(){
 	}
 
 	if(bodycss.length > 0){
-		var bod = document.getElementsByTagName('body')[0],
-			qbtn = document.querySelectorAll('.quick-btn'), i;
+		var bod = document.getElementsByTagName('body')[0];
 
 		bod.setAttribute('style', bodycss.join(''));
-
-		i = 0;
-		while(i < qbtn.length){
-			qbtn[i].setAttribute('style', quickcss.join(''));
-			i += 1;
-		}
-
 	}
 };
 

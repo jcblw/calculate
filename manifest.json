@@ -1,7 +1,7 @@
 {
   "name": "Calculate",
   "description": "A Simple Offline Calculator that works in a Popup.",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "app": {
     "launch": {
       "local_path": "calc.html",

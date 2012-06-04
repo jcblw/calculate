@@ -7,7 +7,7 @@ body{
 }
 
 ::selection {
-background: rgba(0,0,0,0);
+	background: rgba(0,0,0,0);
 }
 
 .calculator-wrp{
@@ -22,14 +22,15 @@ background: rgba(0,0,0,0);
 	position: relative;
 	margin-bottom: 10px;
 	overflow: hidden;
+	background-color: rgb(255,255,255);
+	box-shadow: inset 0px 0px 10px rgba(0,0,0,.15);
+	height: 55px;
 }
 
 .display, .mock-display{
-	position: relative;
+	position: absolute;
 	min-width: 240px;
 	height: 55px;
-	background-color: rgb(255,255,255);
-	box-shadow: inset 0px 1px 2px rgba(0,0,0,.3);
 	text-align: right;
 	padding: 0px 20px;
 	line-height: 55px;
@@ -37,25 +38,24 @@ background: rgba(0,0,0,0);
 	overflow: hidden;
 	white-space: nowrap;
 	outline: none;
-	box-shadow: 0px 2px 1px rgba(0,0,0,.3);
-	z-index: 1;
+	right: 0;
 }
 
 .mock-display{
-	position: absolute;
 	top: 50px;
-	box-shadow: 0px -3px 30px rgba(0,0,0,0);
 	right: 0;
+}
+
+.show .display, .show .mock-display{
+	-webkit-transition: top .2s;
 }
 
 .show .display{
 	top: -50px;
-	-webkit-transition: top .2s;
 }
 
 .show .mock-display{
 	top: 0;
-	-webkit-transition: top .2s;
 }
 
 .display-wrp .quick-btn-wrp{
@@ -68,8 +68,8 @@ background: rgba(0,0,0,0);
 .display-wrp .quick-btn{
 	-webkit-transition: left .2s ease-in-out 0;
 	position: absolute;
-	left: -27.5px;
-	width: 27.5px;
+	left: -28px;
+	width: 27px;
 	height: 28px;
 	border-right: 1px solid rgba(255,255,255,.3);
 	cursor: pointer;
@@ -90,27 +90,6 @@ background: rgba(0,0,0,0);
 
 .display-wrp .clear{
 	top: 0px;
-}
-
-.display-wrp .clear i{
-	background:url(quick-btns.png) 0 0; 
-}
-
-.display-wrp .clear:hover i{
-	background-position: 0px -16px;
-}
-
-.display-wrp .backspace:hover i{
-	background-position: -16px -16px;
-}
-
-.display-wrp .backspace{
-	top: 28px;
-	-webkit-transition: left .2s ease-in-out 0;
-}
-
-.display-wrp .backspace i{
-	background:url(quick-btns.png) -16px 0px; 
 }
 
 
@@ -178,72 +157,52 @@ background: rgba(0,0,0,0);
 	box-shadow: 0px 1px 4px rgba(0,0,0,0), inset 0px 1px 4px rgba(0,0,0,.5);
 }
 
-.bottom-bar-wrp{
-	position: relative;
-	height: 1px;
-	width: 100%;
-}
-
-.bottom-tab{
+.top-bar{
 	position: absolute;
-	top: -16px;
-	width: 16px;
+	height: 1px;
+	height: 23px;
+	bottom: -10px;
 	left: 0;
-	height: 16px;
+	right: 0;
+	background: rgba(0,0,0,0);
+	opacity: .3;
+	-webkit-transition: all .4s ease-out .3s;
 }
 
-.panel.bottom-tab{
-	border-radius: 0 4px 0 0;
-	text-align: center;
-	cursor: n-resize;
-	background:url(quick-btns.png) 0px -32px, rgb(255,255,255); 
-	-webkit-transition: top .5s ease-in .3s;
+.top-bar:hover{
+	opacity: 1;
+	bottom: 0;
+	background: rgba(0,0,0,.3);
+	z-index: 1000;
 }
 
-.bottom-bar{
-	top: 0;
-	bottom: 27px;
-	min-width: 240px;
-	padding: 0 10px;
-	height: 27px;
-	border-radius: 0 4px 0 0;
-	line-height: 27px;
-	text-align: left;
-	cursor: pointer;
-}
-
-.panel .bottom-bar{
-	background: #fff;
-}
-
-.panel.bottom-tab:hover {
-	top: -39px;
-}
-
-.panel.bottom-tab:hover .bottom-bar{
-	top: -23px;
-}
-
-.bottom-bar a {
-	color: #222;
-	text-decoration: none;
-}
-
-.setting{
-	display: block;
-	background: url(quick-btns.png) -32px 0;
+.top-bar a{
 	width: 16px;
 	height: 16px;
-	margin: 5px 0;
+	margin: 5px;
+	float: left;
+	cursor: pointer;
+	display: block;
+}
+
+.clear{
+	background:url(quick-btns.png); 
+	background-position: 0px -16px;
+}
+
+.backspace{
+	background:url(quick-btns.png); 
+	background-position: -16px -16px;
+}
+
+
+
+.top-bar .setting{
+	background: url(quick-btns.png) -32px 0;
 	float: right;
 }
 
-.redeyeops-logo{
-	display: inline-block;
-	background: url(quick-btns.png) -16px -32px;
-	width: 16px;
-	height: 16px;
-	margin: 5px 0;
-	float: left;
-}
+
+
+
 
