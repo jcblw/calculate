@@ -4,41 +4,52 @@
 <link rel="stylesheet" media="screen" href="calc.css">
 <meta name="viewport" content ="user-scalable=no, width=device-width"/>
 <style type="text/css" id="cust"></style>
-
-<div class="calculator-wrp">
-	<div class="display-wrp">
-		<div class="display" contenteditable="true">0</div>
-		<div class="mock-display"></div>
-		<div class="top-bar">
+<body class="calculator">
+	<div class="calculator-wrp module">
+		<nav>
 			<a class="clear"></a>
 			<a class="backspace"></a>
-			<a class="setting" href="settings.html" target="_blank"></a>
+			<a class="expand"></a>
+		</nav>
+		<div class="display-wrp">
+			<div class="display" contenteditable="true">0</div>
+			<div class="mock-display"></div>
+			<div class="top-bar">
+				<a class="setting" href="settings.html" target="_blank"></a>
+			</div>
+		</div>
+		<div class="btn-wrp">
+			<div class="btn" data-code="55" data-char="7" >7</div>
+			<div class="btn" data-code="56" data-char="8">8</div>
+			<div class="btn" data-code="57" data-char="9">9</div>
+			<div class="btn" data-code="47" data-char="/"><span>&divide;</span></div>
+		</div>
+		<div class="btn-wrp">
+			<div class="btn" data-code="52" data-char="4">4</div>
+			<div class="btn" data-code="53" data-char="5">5</div>
+			<div class="btn" data-code="54" data-char="6">6</div>
+			<div class="btn" data-code="42" data-char="*"><span>&times;</span></div>
+		</div>
+		<div class="btn-wrp">
+			<div class="btn" data-code="49" data-char="1">1</div>
+			<div class="btn" data-code="50" data-char="2">2</div>
+			<div class="btn" data-code="51" data-char="3">3</div>
+			<div class="btn" data-code="45" data-char="-"><span>-</span></div>
+		</div>
+		<div class="btn-wrp">
+			<div class="btn" data-code="46" data-char=".">.</div>
+			<div class="btn" data-code="48" data-char="0">0</div>
+			<div class="btn" data-code="13" >=</div>
+			<div class="btn" data-code="43" data-char="+"><span>+</span></div>
 		</div>
 	</div>
-	<div class="btn-wrp">
-		<div class="btn" data-code="55" data-char="7" >7</div>
-		<div class="btn" data-code="56" data-char="8">8</div>
-		<div class="btn" data-code="57" data-char="9">9</div>
-		<div class="btn" data-code="47" data-char="/"><span>&divide;</span></div>
+	<div class="console-wrp module">
+		<nav>
+			<a class="back-to-cal"></a>
+			History
+		</nav>
+		<ul></ul>
 	</div>
-	<div class="btn-wrp">
-		<div class="btn" data-code="52" data-char="4">4</div>
-		<div class="btn" data-code="53" data-char="5">5</div>
-		<div class="btn" data-code="54" data-char="6">6</div>
-		<div class="btn" data-code="42" data-char="*"><span>&times;</span></div>
-	</div>
-	<div class="btn-wrp">
-		<div class="btn" data-code="49" data-char="1">1</div>
-		<div class="btn" data-code="50" data-char="2">2</div>
-		<div class="btn" data-code="51" data-char="3">3</div>
-		<div class="btn" data-code="45" data-char="-"><span>-</span></div>
-	</div>
-	<div class="btn-wrp">
-		<div class="btn" data-code="46" data-char=".">.</div>
-		<div class="btn" data-code="48" data-char="0">0</div>
-		<div class="btn" data-code="13" >=</div>
-		<div class="btn" data-code="43" data-char="+"><span>+</span></div>
-	</div>
-</div>
 
-<script src="calc.js"></script>
+	<script src="calc.js"></script>
+</body>

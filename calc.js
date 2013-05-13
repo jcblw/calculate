@@ -10,6 +10,8 @@ calc = function(){
 	this.equal = null;
 	this.number = null;
 	this.method = '+';
+	this.chain = [];
+	this.chainState = 0;
 	this.display = document.querySelectorAll('.display')[0];
 	this.mock = document.querySelectorAll('.mock-display')[0];
 	this.displaywrp = document.querySelectorAll('.display-wrp')[0];
@@ -18,37 +20,37 @@ calc = function(){
 
 customizr = function(){
 	var bodycss = [],
-		syntax;
+		style = document.getElementById('cust'),
+		imp = '!important;',
+		styles,syntax;
 	if(typeof localStorage.background === 'string'){
-		syntax = 'background : ' + localStorage.background + '; ';
+		syntax = 'background : ' + localStorage.background + imp;
 		bodycss.push(syntax);
+		styles = document.createTextNode('nav{background-color:'+localStorage.background+imp+'}');
+		style.appendChild(styles);
 	}else{
 		localStorage.background = '#CCCCCC';
 	}
 	if(typeof localStorage.font === 'string'){
-		syntax = 'font-family : ' + localStorage.font + '; ';
+		syntax = 'font-family : ' + localStorage.font + imp;
 		bodycss.push(syntax);
 	}else{
 		localStorage.font = 'monospace';
 	}
 	if(typeof localStorage.highlight === 'string'){
-		var style = document.getElementById('cust');
-			styles = document.createTextNode('.btn.current{background:'+localStorage.highlight+'!important;}');
+			styles = document.createTextNode('.btn.current{background:'+localStorage.highlight+imp+'}');
 			style.appendChild(styles);
 	}else{
 		localStorage.highlight = '#FF4E00';
 	}
 
 	if(bodycss.length > 0){
-		var bod = document.getElementsByTagName('body')[0];
-
-		bod.setAttribute('style', bodycss.join(''));
+		styles = document.createTextNode('body{' + bodycss.join('') + '}');
+		style.appendChild(styles);
 	}
 };
 
 calc.prototype.charset = function(e){
-
-
 
 	//library of codes
 	var _this = (typeof this.display === 'undefined') ? cal : this;
@@ -77,6 +79,7 @@ calc.prototype.charset = function(e){
 				};
 
 				_this.changeMethod(legend[code]);
+				_this.addChain(legend[code]);
 			// if its enter	
 			}else if(utils.inArray(equal, code)){
 				//get total
@@ -91,12 +94,75 @@ calc.prototype.charset = function(e){
 			}else{
 				_this.display.innerText = value;
 			}
+			_this.addChain(String.fromCharCode(code));
 		}
 
 	}else{
 		e.preventDefault();
 	}
 
+};
+// parse the chain of number for history, need to send this data once parsed to be parsed again to be strore in seesionStorage && eventually localstorage
+calc.prototype.parseChain = function(){
+	var mod = /[\/\-\+\*\=b]/,
+		num = /[0-9]+/,
+		dot = /[.]+/,
+		i = 0,
+		bundle = [],
+		thisBundle = [];
+	// split chain into bundle mainly to link numbers
+	while (i < this.chain.length){
+		var _this = this.chain[i];
+		if(num.test(_this) || dot.test(_this)){
+			thisBundle.push(_this);
+		}else if(mod.test(_this)){
+			bundle.push(thisBundle.join(''));
+			bundle.push(_this);
+			thisBundle.length = 0;
+		}
+		
+		i += 1;
+		//join all the bundles
+		if(i === this.chain.length && thisBundle.length > 0){
+			bundle.push(thisBundle.join(''));
+		}
+	}
+	// leave an array of single variable
+	this.chain = bundle;
+	// reset array and index
+	var _bundle = [],
+		__thisBundle = [];
+	i = 0;
+	while (i < this.chain.length){
+		var __this = this.chain[i];
+		if(__this === 'b'){
+			_bundle.push(__thisBundle.join(' '));
+			__thisBundle.length = 0;
+		}else{
+			__thisBundle.push(__this);
+		}
+		i += 1;
+	}
+
+	var result = {equations:_bundle,chain:this.chain};
+
+	console.log(result);
+
+	// console.log(_bundle);
+	sessionStorage.chain = JSON.stringify(result);
+	// TODO: need to loop again and chain equations together
+	// TODO: take list the flip and display in list.
+	
+
+}
+
+calc.prototype.addChain = function(char){
+
+	 this.chain.push(char);
+
+	 this.parseChain();
+
+	 //console.log(this.chain);
 };
 
 calc.prototype.changeMethod = function(method){
@@ -174,6 +240,9 @@ calc.prototype.equals = function(number, method){
 
 	if(method !== 'soft'){
 		this.show(this.number);
+		this.addChain('=');
+		this.addChain(this.number.toString());
+		this.addChain('b');
 	}
 
 	return this.number;
@@ -198,7 +267,7 @@ calc.prototype.backspace = function(){
 
 calc.prototype.events = function(){
 
-	var _this = this
+	var _this = this;
 
 	var btn = {
 
@@ -227,6 +296,25 @@ calc.prototype.events = function(){
 			this.className = (/pressed/.test(this.className)) ? this.className.replace(' pressed', '') : this.className;
 		}
 
+	}, next = function(){
+		var bod = document.getElementsByTagName('body')[0],
+			thisConsole = document.querySelector('.console-wrp ul'),
+			make = (function(){
+				thisConsole.innerHTML = '';
+				var i = 0,
+				data = JSON.parse(sessionStorage.chain).equations;
+				//Flip data to show newest first
+				data.reverse();
+				while(i < data.length){
+					thisConsole.innerHTML += '<li>' + data[i] + '</li>';
+					i += 1;
+				}
+			}());
+
+		bod.className = bod.className.replace('calculator', 'console');
+	}, back = function(){
+		var bod = document.getElementsByTagName('body')[0];
+		bod.className = bod.className.replace('console', 'calculator');
 	};
 
 	this.setCursor();
@@ -234,6 +322,8 @@ calc.prototype.events = function(){
 	this.display.addEventListener('keypress', this.charset, false);
 	document.querySelector('.clear').addEventListener('click', this.clear, false);
 	document.querySelector('.backspace').addEventListener('click', this.backspace, false);
+	document.querySelector('.expand').addEventListener('click', next, false);
+	document.querySelector('.back-to-cal').addEventListener('click', back, false);
 	var i = 0;
 
 	while(i < this.btns.length){
@@ -267,23 +357,15 @@ calc.prototype.setCursor = function() {
 calc.prototype.build = function(){
 
 	var _this = this;
+		bottom = document.querySelectorAll('.bottom-tab')[0],
+		html = document.getElementsByTagName('html')[0],
+		body = document.getElementsByTagName('body')[0];
 
-	if(window.innerHeight < 360){
-		var bottom = document.querySelectorAll('.bottom-tab')[0],
-			html = document.getElementsByTagName('html')[0],
-			body = document.getElementsByTagName('body')[0];
 
-		window.onload = function(){
-			if(window.innerHeight > 0){ 
-				html.style.height = window.innerHeight + 'px';
-				html.style.overflow = 'hidden';
-				body.style.height = window.innerHeight + 'px';
-				body.style.overflow = 'hidden';
-				bottom.className = bottom.className + ' panel';
-			}
-		}
-
-	};
+	html.style.height = window.innerHeight + 'px';
+	html.style.overflow = 'hidden';
+	body.style.height = window.innerHeight + 'px';
+	body.style.overflow = 'hidden';
 
 	_this.mock.style.width = (window.innerWidth - 40) + 'px';
 
