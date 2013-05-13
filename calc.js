@@ -1,11 +1,4 @@
-
-var utils = {
-	inArray : function (arr, val) {
-		return (arr.indexOf(val) != -1);
-	}
-},
-
-calc = function(){
+var calc = function(){
 	this.state = 0;
 	this.equal = null;
 	this.number = null;
@@ -60,16 +53,16 @@ calc.prototype.charset = function(e){
 		code = e.keyCode,
 		value = _this.display.innerText.replace(/^[0]+/g, '');
 	//check for a valid key code
-	if(utils.inArray(valid, code)){
+	if(valid.contains(code)){
 
 		//Dont allow multple decimal points
 		if(/[.]+[0-9]*[.]+/g.test(value + '.') && code === 46){ e.preventDefault();}
 
 		// lets see if its a method or enter
-		if((utils.inArray(method, code) || utils.inArray(equal, code)) && !(code === 45 && value === '') ){
+		if((method.contains(code) || equal.contains(code)) && !(code === 45 && value === '') ){
 
 			// if its a method update the method
-			if(utils.inArray(method, code)){
+			if(method.contains(code)){
 
 				var legend = {
 					47 : '/',
@@ -81,7 +74,7 @@ calc.prototype.charset = function(e){
 				_this.changeMethod(legend[code]);
 				_this.addChain(legend[code]);
 			// if its enter	
-			}else if(utils.inArray(equal, code)){
+			}else if(equal.contains(code)){
 				//get total
 				_this.equals(parseFloat(value));
 			}
@@ -104,18 +97,15 @@ calc.prototype.charset = function(e){
 };
 // parse the chain of number for history, need to send this data once parsed to be parsed again to be strore in seesionStorage && eventually localstorage
 calc.prototype.parseChain = function(){
-	var mod = /[\/\-\+\*\=b]/,
-		num = /[0-9]+/,
-		dot = /[.]+/,
-		i = 0,
+	var i = 0,
 		bundle = [],
 		thisBundle = [];
 	// split chain into bundle mainly to link numbers
 	while (i < this.chain.length){
 		var _this = this.chain[i];
-		if(num.test(_this) || dot.test(_this)){
+		if(_this.isNum()){
 			thisBundle.push(_this);
-		}else if(mod.test(_this)){
+		}else if(_this.isMod()){
 			bundle.push(thisBundle.join(''));
 			bundle.push(_this);
 			thisBundle.length = 0;
@@ -261,7 +251,13 @@ calc.prototype.backspace = function(){
 
 	var _this = cal;
 
-	_this.display.innerText = _this.display.innerText.substring(0, _this.display.innerText.length - 1); 
+	_this.display.innerText = _this.display.innerText.substring(0, _this.display.innerText.length - 1);
+
+	// check if were dealing with a number
+	if(_this.chain[_this.chain.length - 1].isNum()){
+		// pop last value off chain
+		_this.chain.pop();
+	}
 
 };
 
@@ -305,6 +301,9 @@ calc.prototype.events = function(){
 				data = JSON.parse(sessionStorage.chain).equations;
 				//Flip data to show newest first
 				data.reverse();
+				if(data.length === 0){
+					thisConsole.innerHTML += '<li>Calculate to Populate</li>';
+				}
 				while(i < data.length){
 					thisConsole.innerHTML += '<li>' + data[i] + '</li>';
 					i += 1;
@@ -359,27 +358,50 @@ calc.prototype.build = function(){
 	var _this = this;
 		bottom = document.querySelectorAll('.bottom-tab')[0],
 		html = document.getElementsByTagName('html')[0],
-		body = document.getElementsByTagName('body')[0];
+		body = document.getElementsByTagName('body')[0],
+		loading = document.querySelectorAll('.loading-wrp')[0],
+		wh = window.innerHeight;
 
 
-	html.style.height = window.innerHeight + 'px';
+		if(wh < 360){
+			wh = 360;
+			//compensate for chrome os thinking that its toolbar is part of the innerheight - 30px toolbar
+			window.resizeTo(280, 390);
+		}
+
+	html.style.height = wh + 'px';
 	html.style.overflow = 'hidden';
-	body.style.height = window.innerHeight + 'px';
+	body.style.height = wh + 'px';
 	body.style.overflow = 'hidden';
 
 	_this.mock.style.width = (window.innerWidth - 40) + 'px';
 
 	this.events();
 
+	loading.className += ' loaded';
 
 };
 
+//Modify the DOM a little
+//if its a number
+String.prototype.isNum = function(){
+	var num = /[0-9]+/,
+		dot = /[.]+/;
+	
+	return (num.test(this) || dot.test(this));
+};
+// if is a modifier
+String.prototype.isMod = function(){
+	var mod = /[\/\-\+\*\=b]/;
+
+	return mod.test(this);
+};
+
+//Check if in array return boolean
+Array.prototype.contains = function(mixed){
+	return (this.indexOf(mixed) != -1);
+};
 
 var cal = new calc();
 cal.build();
 customizr();
-
-
-
-
-

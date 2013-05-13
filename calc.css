@@ -2,9 +2,10 @@ body{
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	background-color: #ccc;
 	font-family: monospace;
 	position: relative;
+	background: rgba(0,0,0,0.3);
+	min-height: 100%
 }
 
 ::selection {
@@ -12,27 +13,56 @@ body{
 }
 
 .module{
-	min-width: 280px;
-	height: 360px;
+	min-width: 100%;
+	min-height: 360px;
 	position: absolute;
 	top: 0;
-	-webkit-transition: left .5s;
+	-webkit-transition: left .5s ease-out;
 }
 
 nav{
 	height: 30px;
 	line-height: 30px;
-	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 1%,rgba(0,0,0,0.05) 100%);
+}
+
+.console-wrp nav{
+	background: rgba(0,0,0,0.3);
 }
 
 nav > a{
 	margin: 7px 5px;
 }
 
-.console-wrp{
-	left: 280px;
+.loading-wrp{
+	left: 0;
+	opacity: 1;
 	background-color: rgb(255,255,255);
-	box-shadow: inset 0px 0px 10px rgba(0,0,0,.15);
+}
+
+.loaded.loading-wrp{
+	opacity: 0;
+	z-index: -1;
+	-webkit-transition: all .5s ease-out .5s;
+}
+
+.loading-icon{
+	width: 128px;
+	height: 128px;
+	background: url(icon_128.png);
+	margin: 30% auto 0;
+}
+
+.loading-spinner{
+	width: 24px;
+	height: 24px;
+	background: url(loading.gif);
+	margin: 5px auto 0;
+}
+
+.console-wrp{
+	left: 100%;
+	background-color: rgb(255,255,255);
+	box-shadow: inset 0px 0px 10px rgba(0,0,0,.3);
 }
 
 .console .console-wrp{
@@ -40,21 +70,20 @@ nav > a{
 }
 
 .console-wrp > ul{
-	margin: 0px;
-	padding: 0px;
+	margin: 0 0 0 5px;
+	padding: 0;
 	list-style-type: none;
 	max-height: 330px;
 	overflow: scroll;
 }
 
 .console-wrp li{
-	padding: 0px 10px;
+	padding: 0 10px;
 	line-height: 30px;
 	border-bottom: 1px solid #efefef;
 }
 
 .calculator-wrp{
-	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 1%,rgba(0,0,0,0.15) 100%);
 	overflow: hidden;
 	margin: 0 auto;
 	left: -280px;
@@ -70,7 +99,7 @@ nav > a{
 	margin-bottom: 10px;
 	overflow: hidden;
 	background-color: rgb(255,255,255);
-	box-shadow: inset 0px 0px 10px rgba(0,0,0,.15);
+	box-shadow: inset 0px 0px 10px rgba(0,0,0,.3);
 	height: 55px;
 }
 
@@ -147,6 +176,12 @@ nav > a{
 
 .btn-wrp{
 	display: -webkit-flexbox;
+	display: flexbox;
+	display: -webkit-box; 
+	-webkit-box-align: stretch; 
+	-webkit-box-orient: horizontal;
+	box-align: stretch; 
+	box-orient: horizontal;
 	margin: 0 auto 10px;
 	padding: 0 10px;
 	width: 260px;
@@ -155,18 +190,18 @@ nav > a{
 .btn-wrp > .btn{
 	position: relative;
 	-webkit-box-flex: 1;
+	flex: 1;
 	margin-right: 10px;
 	min-width: 55px;
 	height: 55px;
-	border-radius: 10px;
+	border-radius: 4px;
 	text-align: center;
 	line-height: 55px;
 	font-size: 50px;
 	color: #fff;
 	text-shadow: 0px -1px 1px rgba(0,0,0,.5);
 	box-shadow: 0px 1px 2px rgba(0,0,0,.3);
-	background: -webkit-linear-gradient(top, rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 100%); 
-	background: linear-gradient(top, rgba(255,255,255,.5) 0%,rgba(255,255,255,0) 100%);
+	background: rgba(255,255,255,.2); 
 	cursor: pointer;
 	border: 1px solid rgba(255,255,255,.3);
 	-webkit-transition: all .1s;
@@ -193,7 +228,7 @@ nav > a{
 }
 
 .btn.current span{
-	background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%,rgba(0,0,0,.15) 100%); 
+	background: transparent; 
 }
 
 .btn-wrp > .btn:hover{
@@ -219,7 +254,7 @@ nav > a{
 
 .top-bar:hover{
 	background: rgba(255,255,255,.9);
-	box-shadow: 0px -1px 2px rgba(0,0,0,.15);
+	box-shadow: 0px -1px 2px rgba(0,0,0,.3);
 	opacity: 1;
 	bottom: 0;
 	z-index: 1000;
@@ -267,8 +302,15 @@ nav a.expand{
 }
 
 
+::-webkit-scrollbar,
+::-webkit-scrollbar-button, 
+::-webkit-scrollbar-track, 
+::-webkit-scrollbar-track-piece, 
+::-webkit-scrollbar-corner, 
+::-webkit-resizer { background: rgba(0,0,0,0); width: 5px; }
 
-
-
-
-
+::-webkit-scrollbar-thumb{ 
+	background: rgba(0,0,0,.1);
+	border: 1px solid rgba(0,0,0,.05);
+	box-shadow: inset 0px 1px 2px #fff;
+}

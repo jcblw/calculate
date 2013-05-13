@@ -89,29 +89,9 @@ li span{
 	clear: both;
 }
 </style>
-<script src="colorpicker/colorpicker.min.js"></script>
+
 <div class="content">
 <h1>Calculate</h1>
-<h2>Settings</h2>
-
-<ul>
-	<li><div class="colorpicker" id="background"></div><span>Background</span>
-	<li><div class="colorpicker" id="highlight"></div><span>Highlight</span>
-</ul>
-<div class="colormodule">
-	<div class="pointer"></div>
-	<div id="picker-wrapper">
-	    <div id="picker"></div>
-	    <div id="picker-indicator"></div>
-	</div>
-	<div id="slide-wrapper">
-	    <div id="slide"></div>
-	    <div id="slide-indicator"></div>
-	</div>
-	<div class="clear"></div>
-</div>
-
-
 
 <h3>Its free!</h3>
 <p>I planning to keep this small app free. If you like what you see and would like to have this application get even better let me know by donating.</p>
@@ -125,61 +105,4 @@ li span{
 <p>Product of <a href="http://redeyeoperations.com">Red Eye Operations</a></p>
 
 </div>
-<script>
-var ele,
-	prop,
-	colorp = document.querySelectorAll('.colormodule')[0],
-	bg = document.getElementById('background'),
-	hl = document.getElementById('highlight'),
-	html = document.getElementsByTagName('html')[0],
-	c = ColorPicker(
-		document.getElementById('slide'), 
-		document.getElementById('picker'), 
-	    function(hex, hsv, rgb, mousePicker, mouseSlide) {
 
-	        ColorPicker.positionIndicators(
-	            document.getElementById('slide-indicator'),
-	            document.getElementById('picker-indicator'),
-	            mouseSlide, mousePicker
-	        );
-	        if(ele !== null){
-	        	ele.style.background = hex;
-	        	localStorage[prop] = hex;
-	    	}
-	}),
-	cHandle = function(){
-		var offclick = function(){
-			colorp.style.display = 'none';
-			html.removeEventListener('click', offclick)
-		},
-		stopit = function(e){
-			e.stopPropagation();
-		};
-		ele = this;
-		prop = ele.id;
-		colorp.style.top = ele.offsetTop + 'px';
-		colorp.style.left = (ele.offsetLeft + 35) + 'px';
-		colorp.style.display = 'block';
-		c.setHex(localStorage[prop]);
-		setTimeout(function(){
-			colorp.addEventListener('click', stopit);
-			bg.addEventListener('click', stopit);
-			hl.addEventListener('click', stopit);
-			html.addEventListener('click', offclick);
-		},100)
-	};
-
-bg.addEventListener('click', cHandle);
-hl.addEventListener('click', cHandle);
-
-if(localStorage.background){
-	ele = bg;
-	bg.style.background = localStorage.background;
-	c.setHex(localStorage.background);
-}
-if(localStorage.highlight){
-	ele = hl;
-	hl.style.background = localStorage.highlight;
-	c.setHex(localStorage.highlight);
-}
-</script>
